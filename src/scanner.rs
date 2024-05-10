@@ -1,12 +1,11 @@
-mod types;
+pub mod types;
 
 use types::Token;
 
 pub struct Scanner<'a> {
     start: usize,
     current: usize,
-    src: &'a str
-
+    src: &'a str,
 }
 
 impl<'a> Scanner<'a> {
@@ -14,7 +13,7 @@ impl<'a> Scanner<'a> {
         Self {
             start: 0,
             current: 0,
-            src: source
+            src: source,
         }
     }
 
@@ -42,11 +41,13 @@ impl<'a> Scanner<'a> {
             b'*' => Some(Token::MULTIPLY),
             b'/' => Some(Token::DIVIDE),
             b'^' => Some(Token::EXPONENT),
-            x => if x.is_ascii_whitespace() { 
-                        None
-                    } else {
-                        panic!("Unexpected token '{}'", char::from(c))
-                    }
+            x => {
+                if x.is_ascii_whitespace() {
+                    None
+                } else {
+                    panic!("Unexpected token '{}'", char::from(c))
+                }
+            }
         }
     }
 
@@ -65,10 +66,13 @@ impl<'a> Scanner<'a> {
         }
 
         if !is_float {
-            return Token::INTEGER {val: self.src[self.start..self.current].parse::<i64>().unwrap()};
-        }
-        else {
-            return Token::FLOAT {val: self.src[self.start..self.current].parse::<f64>().unwrap()};
+            Token::INTEGER {
+                val: self.src[self.start..self.current].parse::<i64>().unwrap(),
+            }
+        } else {
+            Token::FLOAT {
+                val: self.src[self.start..self.current].parse::<f64>().unwrap(),
+            }
         }
     }
 
